@@ -820,7 +820,7 @@ export default function RAGAssistant() {
 
                           <motion.div
                             whileHover={{ scale: 1.008 }}
-                            className={`max-w-[70%] p-4 rounded-2xl shadow-md backdrop-blur-sm ${
+                            className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl shadow-md backdrop-blur-sm ${
                               message.sender === "user"
                                 ? isDarkMode
                                   ? "bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white shadow-orange-400/25"
