@@ -6,15 +6,30 @@ import { TextLoader } from "langchain/document_loaders/fs/text";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
 
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
+
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json(
+        { message: "File too large. Max allowed size is 10 MB." },
+        { status: 400 }
+      );
+    }
+
     const metadata = formData.get("metadata") as string;
     const newSource = metadata ? JSON.parse(metadata) : null;
 
     const filename = newSource.name;
-    const fileExtension = filename.split(".")[1].pop()?.toLowerCase() || ""
+    const fileExtension = filename.split(".").pop()?.toLowerCase() || ""
 
     let loader;
     if(fileExtension === "pdf"){
