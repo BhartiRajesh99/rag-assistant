@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
 
     const vectorStore = new QdrantVectorStore(embeddings, {
       url: process.env.VECTOR_URL,
+      apiKey: process.env.QDRANT_API_KEY,
       collectionName: "rag-collection",
     });
 

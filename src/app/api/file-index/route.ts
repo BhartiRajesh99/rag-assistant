@@ -2,7 +2,6 @@ import { NextResponse, NextRequest } from "next/server";
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
-import { MultiFileLoader } from "langchain/document_loaders/fs/multi_file";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
 import { DocxLoader } from "@langchain/community/document_loaders/fs/docx";
@@ -38,6 +37,7 @@ export async function POST(request: NextRequest) {
 
     await QdrantVectorStore.fromDocuments(docs, embeddings, {
       url: process.env.VECTOR_URL,
+      apiKey: process.env.QDRANT_API_KEY,
       collectionName: "rag-collection",
     });
 

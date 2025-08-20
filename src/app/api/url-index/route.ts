@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
 
     await QdrantVectorStore.fromDocuments(docs, embeddings, {
       url: process.env.VECTOR_URL,
+      apiKey: process.env.QDRANT_API_KEY,
       collectionName: "rag-collection",
     });
 

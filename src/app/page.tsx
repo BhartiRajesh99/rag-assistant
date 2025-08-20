@@ -144,7 +144,7 @@ export default function RAGAssistant() {
 
     const newSource: DataSource = {
       id: Date.now().toString() + Math.random(),
-      name: files[0]?.name || "Filename",
+      name: files[0]?.name,
       type: "file",
       status: "processing",
     };

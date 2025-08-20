@@ -17,10 +17,14 @@ export async function POST(request: NextRequest){
         apiKey: process.env.GOOGLE_API_KEY,
       });
     
-      const vectorStore = await QdrantVectorStore.fromExistingCollection(embeddings, {
+      const vectorStore = await QdrantVectorStore.fromExistingCollection(
+        embeddings,
+        {
           url: process.env.VECTOR_URL,
-          collectionName: "rag-collection"
-        });
+          apiKey: process.env.QDRANT_API_KEY,
+          collectionName: "rag-collection",
+        }
+      );
     
       const vectorRetriever = vectorStore.asRetriever({
         k: 5,
