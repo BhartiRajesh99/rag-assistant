@@ -629,7 +629,7 @@ export default function RAGAssistant() {
                 <CardContent className="relative z-10">
                   <div
                     ref={bottomRefDataSources}
-                    className="space-y-2 max-h-[142px] overflow-y-auto"
+                    className="space-y-2 max-h-[142px] scrollbar-gutter:stable overflow-y-auto"
                   >
                     {dataSources.length === 0 ? (
                       <motion.p
@@ -891,7 +891,10 @@ export default function RAGAssistant() {
                                 : "bg-gradient-to-r from-gray-100/80 via-white/60 to-gray-100/80 text-gray-900 border border-gray-300/50"
                             }`}
                           >
-                            <div ref={bottomRef} className="flex items-center gap-1">
+                            <div
+                              ref={bottomRef}
+                              className="flex items-center gap-1"
+                            >
                               {[0, 1, 2].map((i) => (
                                 <motion.span
                                   key={i}

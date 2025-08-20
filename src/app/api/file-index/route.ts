@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     const newSource = metadata ? JSON.parse(metadata) : null;
 
     const filename = newSource.name;
-    const fileExtension = filename.split(".")[1].toLowerCase()
+    const fileExtension = filename.split(".")[1].pop()?.toLowerCase() || ""
 
     let loader;
     if(fileExtension === "pdf"){

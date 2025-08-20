@@ -2,19 +2,13 @@ import { NextResponse, NextRequest } from "next/server";
 import { PlaywrightWebBaseLoader } from "@langchain/community/document_loaders/web/playwright";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
+import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
 
 export async function POST(request: NextRequest) {
   try {
     const response = await request.json();
     
-    const loader = new PlaywrightWebBaseLoader(response.content, {
-      launchOptions: {
-        headless: true,
-      },
-      gotoOptions: {
-        waitUntil: "domcontentloaded",
-      },
-    });
+    const loader = new CheerioWebBaseLoader(response.content);
 
     const docs = await loader.load();
 
