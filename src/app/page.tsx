@@ -22,6 +22,7 @@ import {
   User,
   Sun,
   Moon,
+  Github,
 } from "lucide-react";
 import toast from "react-hot-toast";
 
@@ -308,73 +309,114 @@ export default function RAGAssistant() {
       <motion.header
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`border-b sticky top-0 z-50 shadow-lg backdrop-blur-xl transition-all duration-500 ${
+        className={`border-b sticky w-full top-0 z-50 shadow-lg backdrop-blur-xl transition-all duration-500 ${
           isDarkMode
             ? "border-gradient-to-r from-amber-200/20 via-gray-700/40 to-orange-200/20 bg-black/70 shadow-amber-500/5"
             : "border-gradient-to-r from-amber-300/30 via-gray-300/40 to-orange-300/30 bg-white/70 shadow-amber-500/10"
         }`}
       >
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <motion.div
-              className="flex items-center gap-3"
-              whileHover={{ scale: 1.02 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <div className="relative">
-                <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-all duration-500 ${
-                    isDarkMode
-                      ? "bg-gradient-to-br from-amber-400 via-orange-500 to-amber-500 shadow-amber-500/25"
-                      : "bg-gradient-to-br from-amber-500 via-orange-600 to-amber-600 shadow-amber-500/30"
-                  }`}
-                >
-                  <Brain className="h-6 w-6 text-white animate-pulse-slow" />
-                </div>
-                <Sparkles
-                  className={`h-4 w-4 absolute -top-1 -right-1 animate-float ${
-                    isDarkMode ? "text-white" : "text-black"
-                  }`}
-                />
-              </div>
-              <div>
-                <h1
-                  className={`text-3xl font-bold bg-clip-text text-transparent font-serif transition-all duration-500 ${
-                    isDarkMode
-                      ? "bg-gradient-to-r from-amber-300 via-orange-400 to-amber-400"
-                      : "bg-gradient-to-r from-amber-600 via-orange-700 to-amber-700"
-                  }`}
-                >
-                  RAGify
-                </h1>
-                <p
-                  className={`text-sm transition-colors duration-500 ${
-                    isDarkMode ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  Upload data and chat with your documents
-                </p>
-              </div>
-            </motion.div>
-
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                onClick={toggleTheme}
-                variant="outline"
-                size="icon"
-                className={`rounded-xl transition-all duration-500 ${
-                  isDarkMode
-                    ? "bg-gray-800/50 border-gray-600/50 hover:bg-amber-500/20 hover:border-amber-400/50 text-gray-300 hover:text-amber-400"
-                    : "bg-white/50 border-gray-300/50 hover:bg-amber-100/50 hover:border-amber-400/50 text-gray-700 hover:text-amber-600"
-                }`}
+          <div className="flex gap-1 flex-col">
+            <div className="flex items-center justify-between">
+              <motion.div
+                className="flex items-center gap-3"
+                whileHover={{ scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300 }}
               >
-                {isDarkMode ? (
-                  <Sun className="h-4 w-4" />
-                ) : (
-                  <Moon className="h-4 w-4" />
-                )}
-              </Button>
-            </motion.div>
+                <div className="relative">
+                  <div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg transition-all duration-500 ${
+                      isDarkMode
+                        ? "bg-gradient-to-br from-amber-400 via-orange-500 to-amber-500 shadow-amber-500/25"
+                        : "bg-gradient-to-br from-amber-500 via-orange-600 to-amber-600 shadow-amber-500/30"
+                    }`}
+                  >
+                    <Brain className="h-6 w-6 text-white animate-pulse-slow" />
+                  </div>
+                  <Sparkles
+                    className={`h-4 w-4 absolute -top-1 -right-1 animate-float ${
+                      isDarkMode ? "text-white" : "text-black"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <h1
+                    className={`text-3xl font-bold bg-clip-text text-transparent font-serif transition-all duration-500 ${
+                      isDarkMode
+                        ? "bg-gradient-to-r from-amber-300 via-orange-400 to-amber-400"
+                        : "bg-gradient-to-r from-amber-600 via-orange-700 to-amber-700"
+                    }`}
+                  >
+                    RAGify
+                  </h1>
+                </div>
+              </motion.div>
+              <div className="flex gap-2 justify-evenly">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <a
+                    target="_blank"
+                    href="https://github.com/BhartiRajesh99/rag-assistant"
+                  >
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className={`rounded-xl cursor-pointer transition-all duration-500 ${
+                        isDarkMode
+                          ? "bg-gray-800/50 border-gray-600/50 hover:bg-amber-500/20 hover:border-amber-400/50 text-gray-300 hover:text-amber-400"
+                          : "bg-white/50 border-gray-300/50 hover:bg-amber-100/50 hover:border-amber-400/50 text-gray-700 hover:text-amber-600"
+                      }`}
+                    >
+                      <Github className="h-5 w-5" />
+                    </Button>
+                    <p
+                      className={`text-xs mt-1 text-center ${
+                        isDarkMode ? "text-gray-300" : "text-gray-700"
+                      }`}
+                    >
+                      Github
+                    </p>
+                  </a>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button
+                    onClick={toggleTheme}
+                    variant="outline"
+                    size="icon"
+                    className={`rounded-xl cursor-pointer transition-all duration-500 ${
+                      isDarkMode
+                        ? "bg-gray-800/50 border-gray-600/50 hover:bg-amber-500/20 hover:border-amber-400/50 text-gray-300 hover:text-amber-400"
+                        : "bg-white/50 border-gray-300/50 hover:bg-amber-100/50 hover:border-amber-400/50 text-gray-700 hover:text-amber-600"
+                    }`}
+                  >
+                    {isDarkMode ? (
+                      <Sun className="h-5 w-5" />
+                    ) : (
+                      <Moon className="h-5 w-5" />
+                    )}
+                  </Button>
+                  <p
+                    className={`text-xs mt-1 text-center ${
+                      isDarkMode ? "text-gray-300" : "text-gray-700"
+                    } `}
+                  >
+                    {!isDarkMode ? "Dark" : "Light"}
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+            <p
+              className={`text-sm transition-colors duration-500 ${
+                isDarkMode ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              Upload. Ask. Discover. Chat directly with your documents.
+            </p>
           </div>
         </div>
       </motion.header>
@@ -431,7 +473,7 @@ export default function RAGAssistant() {
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                       setTextInput(e.target.value)
                     }
-                    className={`min-h-[150px] scrollbar-thin resize-none rounded-xl border-2 transition-all duration-200 backdrop-blur-sm ${
+                    className={`min-h-[150px] border-0 scrollbar-thin resize-none rounded-xl transition-all duration-200 backdrop-blur-sm ${
                       isDarkMode
                         ? "border-gray-700/50 focus:border-amber-400/50 bg-gray-800/50 text-white placeholder:text-gray-400"
                         : "border-gray-300/50 focus:border-amber-500/50 bg-white/50 text-gray-900 placeholder:text-gray-500"
@@ -536,7 +578,8 @@ export default function RAGAssistant() {
                         isDarkMode ? "text-gray-400" : "text-gray-600"
                       }`}
                     >
-                      Drag and drop files here, or click to browse
+                      Drag and drop your .docx, .txt, .pdf, .csv files here, or
+                      click to browse
                     </p>
                     <input
                       type="file"
@@ -611,7 +654,7 @@ export default function RAGAssistant() {
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           setUrlInput(e.target.value)
                         }
-                        className={`pl-10 rounded-xl border-2 transition-all duration-200 backdrop-blur-sm ${
+                        className={`pl-10 rounded-xl border-0 transition-all duration-200 backdrop-blur-sm ${
                           isDarkMode
                             ? "border-gray-700/50 focus:border-amber-400/50 bg-gray-800/50 text-white placeholder:text-gray-400"
                             : "border-gray-300/50 focus:border-amber-500/50 bg-white/50 text-gray-900 placeholder:text-gray-500"
@@ -758,7 +801,7 @@ export default function RAGAssistant() {
                               variant="ghost"
                               size="sm"
                               onClick={() => removeDataSource(source.id)}
-                              className="h-8 w-8 p-0 hover:bg-red-500/20 hover:text-red-400 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+                              className="h-8 w-8 p-0 hover:bg-red-500/20 text-red-500/70 hover:text-red-400 rounded-lg opacity-100 transition-all duration-200"
                             >
                               <Trash2 className="h-4 w-4" />
                             </Button>
@@ -1005,7 +1048,7 @@ export default function RAGAssistant() {
                       onKeyPress={(e: KeyboardEvent<HTMLInputElement>) =>
                         e.key === "Enter" && sendMessage()
                       }
-                      className={`flex-1 rounded-xl border-1 transition-all duration-200 backdrop-blur-sm ${
+                      className={`flex-1 border-0 rounded-xl transition-all duration-200 backdrop-blur-sm ${
                         isDarkMode
                           ? "border-gray-700/50 focus:border-amber-400/50 bg-gray-800/50 text-white placeholder:text-gray-400"
                           : "border-gray-300/50 focus:border-amber-500/50 bg-white/50 text-gray-900 placeholder:text-gray-500"

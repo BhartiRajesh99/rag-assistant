@@ -1,8 +1,8 @@
-# 🧠 RAG Assistant
+# 🧠 RAGify
 
-RAG Assistant is a **Retrieval-Augmented Generation (RAG)** based chatbot that allows users to upload documents or provide raw text, and then interact with an intelligent assistant capable of answering questions based on that content.  
+RAGify is a **Retrieval-Augmented Generation (RAG)** based chatbot that allows users to upload documents or provide raw text, and then interact with an intelligent assistant capable of answering questions based on that content.  
 
-It supports multiple document formats such as **PDF, DOCX, TXT, CSV**, and even **direct text input**, making it versatile for different use cases.
+It supports multiple document formats such as **PDF, DOCX, TXT, CSV, URL**, and even **direct text input**, making it versatile for different use cases.
 
 ---
 
@@ -22,7 +22,8 @@ This means the chatbot doesn’t just rely on what it "knows" but can **refer to
 - 📄 **DOCX**  
 - 📜 **TXT**  
 - 📊 **CSV**  
-- 📝 **Raw text input**  
+- 📝 **Raw text input**
+- 🌐 **URL**  
 
 ✅ **Smart Indexing** – Each document is split into smaller chunks and stored in a **vector database (Qdrant)** for efficient retrieval.  
 
@@ -39,7 +40,7 @@ This means the chatbot doesn’t just rely on what it "knows" but can **refer to
 ## ⚙️ How It Works  
 
 1. **Upload/Enter Text**  
-   - User uploads a file (`.pdf`, `.docx`, `.txt`, `.csv`) or types in raw text.  
+   - User uploads a file (`.pdf`, `.docx`, `.txt`, `.csv`), url or types in raw text.  
 
 2. **Indexing**  
    - The file is parsed and split into chunks.  
