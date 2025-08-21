@@ -24,6 +24,8 @@
     "d3-dsv": "^2.0.0",
     "formidable": "^3.5.4",
     "framer-motion": "^12.23.12",
+    "html-to-text": "^9.0.5",
+    "jsdom": "^26.1.0",
     "langchain": "^0.3.31",
     "lucide-react": "^0.540.0",
     "mammoth": "^1.10.0",
@@ -35,11 +37,14 @@
     "react-dom": "19.1.0",
     "react-hot-toast": "^2.6.0",
     "react-markdown": "^10.1.0",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "tailwind-scrollbar": "^4.0.2",
+    "tailwind-scrollbar-hide": "^4.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/formidable": "^3.4.5",
+    "@types/html-to-text": "^9.0.4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

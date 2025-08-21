@@ -31,10 +31,10 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <Toaster position="bottom-right" reverseOrder={false}/>
+      <Toaster position="top-right" reverseOrder={false}/>
       <html
         lang="en"
-        className={`${dmSans.variable} ${spaceGrotesk.variable} antialiased`}
+        className={`${dmSans.variable} ${spaceGrotesk.variable} scrollbar-thin antialiased`}
       >
         <body>{children}</body>
       </html>

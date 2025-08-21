@@ -94,8 +94,12 @@ export default function RAGAssistant() {
       }
       toast.success(`${response.data.updatedResponse.name} Indexed`);
     } catch (error: any) {
-      toast.error(error.message);
-      console.log("Error in add text");
+      setDataSources((prev) => {
+        prev.pop();
+        return [...prev];
+      });
+      toast.error("Failed to index text");
+      console.log("Error in add text: ", error.message);
     }
   };
 
@@ -129,8 +133,12 @@ export default function RAGAssistant() {
       }
       toast.success(`${response.data.updatedResponse.name} Indexed`);
     } catch (error: any) {
-      toast.error(error.message);
-      console.log("Error in add url");
+      setDataSources((prev) => {
+        prev.pop();
+        return [...prev];
+      });
+      toast.error("Failed to index url");
+      console.log("Error in add url: ", error.message);
     }
   };
 
@@ -174,8 +182,12 @@ export default function RAGAssistant() {
         toast.success(`${response.data.updatedResponse.name} Indexed`);
       }
     } catch (error: any) {
-      toast.error(error.message);
-      console.log("Error in add file");
+      setDataSources((prev) => {
+        prev.pop();
+        return [...prev];
+      });
+      toast.error("Failed to index file");
+      console.log("Error in add file: ", error.message);
     }
   };
 
@@ -196,18 +208,53 @@ export default function RAGAssistant() {
     setMessages((prev) => [...prev, userMessage]);
     setChatInput("");
 
+    const botMessageId = (Date.now() + 1).toString();
+    const initialBotMessage: Message = {
+      id: botMessageId,
+      content: "",
+      sender: "bot",
+      timestamp: new Date(),
+    };
+
     try {
-      const response = await axios.post("/api/chat", { query: chatInput });
-      if (response.status === 200) {
-        const botMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          content: response.data.message,
-          sender: "bot",
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botMessage]);
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: chatInput }),
+      });
+
+      const reader: any = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      let accumulatedContent = "";
+      while (true) {
+        const { done, value } = await reader?.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n");
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.slice(6); // Remove 'data: ' prefix
+
+            accumulatedContent += data.replace(/^["']+|["']+$/g, "");
+            const updatedMessages = [
+              ...messages,
+              userMessage,
+              {
+                ...initialBotMessage,
+                content: accumulatedContent
+                  .replace(/\\n/g, "\n")
+                  .replace(/\n{3,}/g, "\n\n")
+                  .trim(),
+              },
+            ];
+            setMessages(updatedMessages);
+          }
+        }
       }
     } catch (error) {
+      toast.error("Failed to load message");
       console.log("Error sendMessage");
     } finally {
       setIsloading(false);
@@ -298,7 +345,7 @@ export default function RAGAssistant() {
                       : "bg-gradient-to-r from-amber-600 via-orange-700 to-amber-700"
                   }`}
                 >
-                  RAG Assistant
+                  RAGify
                 </h1>
                 <p
                   className={`text-sm transition-colors duration-500 ${
@@ -384,7 +431,7 @@ export default function RAGAssistant() {
                     onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                       setTextInput(e.target.value)
                     }
-                    className={`min-h-[150px] resize-none rounded-xl border-2 transition-all duration-200 backdrop-blur-sm ${
+                    className={`min-h-[150px] scrollbar-thin resize-none rounded-xl border-2 transition-all duration-200 backdrop-blur-sm ${
                       isDarkMode
                         ? "border-gray-700/50 focus:border-amber-400/50 bg-gray-800/50 text-white placeholder:text-gray-400"
                         : "border-gray-300/50 focus:border-amber-500/50 bg-white/50 text-gray-900 placeholder:text-gray-500"
@@ -759,38 +806,51 @@ export default function RAGAssistant() {
                     >
                       <Brain className="h-4 w-4 text-white" />
                     </div>
-                    Chat
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Number.POSITIVE_INFINITY,
-                      }}
-                    >
-                      <Sparkles
-                        className={`h-4 w-4 ml-auto ${
-                          isDarkMode ? "text-orange-400" : "text-orange-500"
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-1">
+                        <p className="">Chat</p>
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{
+                            duration: 2,
+                            repeat: Number.POSITIVE_INFINITY,
+                          }}
+                        >
+                          <Sparkles
+                            className={`h-4 w-4 ml-auto ${
+                              isDarkMode ? "text-orange-400" : "text-orange-500"
+                            }`}
+                          />
+                        </motion.div>
+                      </div>
+                      <p
+                        className={`text-xs ${
+                          isDarkMode ? "text-emerald-400" : "text-amber-500"
                         }`}
-                      />
-                    </motion.div>
+                      >
+                        online
+                      </p>
+                    </div>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 flex gap-2 flex-col relative z-10">
+                <CardContent className="flex-1 px-0 flex gap-2 flex-col justify-evenly relative z-10">
                   <div
                     ref={bottomRef}
-                    className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2 pb-6 max-h-[400px]"
+                    className={`flex-1 border ${
+                      isDarkMode ? "border-gray-700/50" : "border-gray-200/50"
+                    } px-3 overflow-y-auto scrollbar-thin space-y-4 py-4 max-h-[400px]`}
                   >
                     <AnimatePresence>
                       {messages.map((message, index) => (
                         <motion.div
                           key={message.id}
-                          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
                           transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 30,
+                            type: "tween",
+                            stiffness: 300,
+                            damping: 20,
                             delay: index * 0.1,
                           }}
                           className={`flex items-start gap-3 ${
@@ -804,7 +864,7 @@ export default function RAGAssistant() {
                               initial={{ scale: 0, rotate: -180 }}
                               animate={{ scale: 1, rotate: 0 }}
                               transition={{
-                                type: "spring",
+                                type: "tween",
                                 stiffness: 300,
                                 delay: index * 0.1 + 0.2,
                               }}
@@ -817,23 +877,41 @@ export default function RAGAssistant() {
                               <Brain className="h-4 w-4 text-white" />
                             </motion.div>
                           )}
-
-                          <motion.div
-                            whileHover={{ scale: 1.008 }}
-                            className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl shadow-md backdrop-blur-sm ${
+                          <div
+                            className={`flex w-full ${
                               message.sender === "user"
-                                ? isDarkMode
-                                  ? "bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white shadow-orange-400/25"
-                                  : "bg-gradient-to-r from-orange-500 via-amber-600 to-orange-500 text-white shadow-orange-500/30"
-                                : isDarkMode
-                                ? "bg-gradient-to-r from-gray-800/80 via-gray-700/60 to-gray-800/80 text-gray-100 border border-gray-600/50"
-                                : "bg-gradient-to-r from-gray-100/80 via-white/60 to-gray-100/80 text-gray-900 border border-gray-300/50"
-                            }`}
+                                ? "items-end"
+                                : "items-start"
+                            } flex-col `}
                           >
-                            <div className="text-sm leading-relaxed">
-                              <ReactMarkdown>{message.content}</ReactMarkdown>
-                            </div>
-                          </motion.div>
+                            <motion.div
+                              whileHover={{ scale: 1.001 }}
+                              className={`max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl shadow-md backdrop-blur-sm ${
+                                message.sender === "user"
+                                  ? isDarkMode
+                                    ? "bg-gradient-to-r from-orange-400 via-amber-500 to-orange-400 text-white shadow-orange-400/25"
+                                    : "bg-gradient-to-r from-orange-500 via-amber-600 to-orange-500 text-white shadow-orange-500/30"
+                                  : isDarkMode
+                                  ? "bg-gradient-to-r from-gray-800/80 via-gray-700/60 to-gray-800/80 text-gray-100 border border-gray-600/50"
+                                  : "bg-gradient-to-r from-gray-100/80 via-white/60 to-gray-100/80 text-gray-900 border border-gray-300/50"
+                              }`}
+                            >
+                              <div className="text-sm leading-relaxed">
+                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                              </div>
+                            </motion.div>
+
+                            <p
+                              className={`text-xs mt-1 pl-2 ${
+                                isDarkMode ? "text-gray-500" : "text-gray-400"
+                              } `}
+                            >
+                              {new Date().toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </p>
+                          </div>
 
                           {message.sender === "user" && (
                             <motion.div
@@ -857,15 +935,13 @@ export default function RAGAssistant() {
                       ))}
                       {isLoading && (
                         <motion.div
-                          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                          exit={{ opacity: 0, y: -10, scale: 0.95 }}
                           transition={{
-                            type: "spring",
-                            stiffness: 500,
-                            damping: 30,
-                            duration: 0.3,
-                            ease: "easeOut",
+                            type: "tween",
+                            stiffness: 300,
+                            damping: 20,
                           }}
                           className="flex items-start gap-3 justify-start"
                         >
@@ -873,7 +949,7 @@ export default function RAGAssistant() {
                           <motion.div
                             initial={{ scale: 0, rotate: -180 }}
                             animate={{ scale: 1, rotate: 0 }}
-                            transition={{ type: "spring", stiffness: 300 }}
+                            transition={{ type: "tween", stiffness: 300 }}
                             className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${
                               isDarkMode
                                 ? "bg-gradient-to-br from-amber-400 via-orange-400 to-amber-500 shadow-amber-500/25"
@@ -891,10 +967,7 @@ export default function RAGAssistant() {
                                 : "bg-gradient-to-r from-gray-100/80 via-white/60 to-gray-100/80 text-gray-900 border border-gray-300/50"
                             }`}
                           >
-                            <div
-                              ref={bottomRef}
-                              className="flex items-center gap-1"
-                            >
+                            <div className="flex items-center gap-1">
                               {[0, 1, 2].map((i) => (
                                 <motion.span
                                   key={i}
@@ -918,7 +991,7 @@ export default function RAGAssistant() {
                   </div>
 
                   <motion.div
-                    className="flex gap-3"
+                    className="flex gap-3 px-2"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 }}
@@ -945,14 +1018,14 @@ export default function RAGAssistant() {
                       <Button
                         onClick={sendMessage}
                         disabled={!chatInput.trim()}
-                        className={`rounded-xl cursor-pointer shadow-lg text-white border-0 ${
+                        className={`rounded-xl w-16 cursor-pointer shadow-lg text-white border-0 ${
                           isDarkMode
                             ? "bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 hover:from-amber-500 hover:via-orange-500 hover:to-amber-600 shadow-amber-500/25"
                             : "bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-600 hover:via-orange-600 hover:to-amber-700 shadow-amber-500/30"
                         }`}
                         size="icon"
                       >
-                        <Send className="h-4 w-4" />
+                        <Send className="h-4 w-6" />
                       </Button>
                     </motion.div>
                   </motion.div>

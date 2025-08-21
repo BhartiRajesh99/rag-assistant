@@ -1,14 +1,19 @@
 import { NextResponse, NextRequest } from "next/server";
-import { PlaywrightWebBaseLoader } from "@langchain/community/document_loaders/web/playwright";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
-import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
+import { RecursiveUrlLoader } from "@langchain/community/document_loaders/web/recursive_url";
+import { compile, htmlToText } from "html-to-text";
 
 export async function POST(request: NextRequest) {
   try {
     const response = await request.json();
-    
-    const loader = new CheerioWebBaseLoader(response.content);
+
+    const compiledConvert = compile({ wordwrap: 130 });
+    const loader = new RecursiveUrlLoader(response.content, {
+      extractor: compiledConvert,
+      maxDepth: 0,
+      timeout: 3000
+    });
 
     const docs = await loader.load();
 
@@ -21,6 +26,7 @@ export async function POST(request: NextRequest) {
       url: process.env.VECTOR_URL,
       apiKey: process.env.QDRANT_API_KEY,
       collectionName: "rag-collection",
+      
     });
 
     const updatedResponse = {...response, status: "indexed"}

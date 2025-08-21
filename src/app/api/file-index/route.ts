@@ -17,10 +17,10 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
-    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { message: "File too large. Max allowed size is 10 MB." },
+        { message: "File too large. Max allowed size is 5 MB." },
         { status: 400 }
       );
     }
