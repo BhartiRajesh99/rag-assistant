@@ -25,6 +25,7 @@ import {
   Github,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import Footer from "@/components/ui/footer";
 
 interface DataSource {
   id: string;
@@ -48,7 +49,7 @@ export default function RAGAssistant() {
     {
       id: "1",
       content:
-        "Hello! I'm your RAG Assistant. Upload some data sources and I'll help you find information from them.",
+        "Hello! I'm your RAGify Assistant. Upload some data sources and I'll help you find information from them.",
       sender: "bot",
       timestamp: new Date(),
     },
@@ -415,7 +416,8 @@ export default function RAGAssistant() {
                 isDarkMode ? "text-gray-400" : "text-gray-600"
               }`}
             >
-              Upload. Ask. Discover. Chat directly with your documents.
+              Interact with your documents like never before — simply upload and
+              chat.
             </p>
           </div>
         </div>
@@ -1078,6 +1080,7 @@ export default function RAGAssistant() {
           </div>
         </div>
       </div>
+      <Footer theme={isDarkMode}/>
     </div>
   );
 }

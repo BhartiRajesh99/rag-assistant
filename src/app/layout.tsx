@@ -17,9 +17,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "RAG Assistant",
+  title: "RAGify",
   icons:{
-    icon: "/rag.svg"
+    icon: "/bot.svg"
   },
   description: "Upload data and chat with your documents",
 };
