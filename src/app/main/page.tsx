@@ -823,7 +823,7 @@ export default function RAGAssistant() {
                         </div>
                       </div>
                       <div>
-                        {messages.length > 2 && (
+                        {!isLoading && (
                           <Button
                             variant="ghost"
                             size="sm"
