@@ -2,7 +2,8 @@ import type React from "react";
 import type { Metadata } from "next";
 import { DM_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import {Toaster} from "react-hot-toast"
+import { Toaster } from "react-hot-toast";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -18,8 +19,8 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "RAGify",
-  icons:{
-    icon: "/bot.svg"
+  icons: {
+    icon: "/bot.svg",
   },
   description: "Upload data and chat with your documents",
 };
@@ -31,12 +32,14 @@ export default function RootLayout({
 }) {
   return (
     <>
-      <Toaster position="top-right" reverseOrder={false}/>
+      <Toaster position="top-right" reverseOrder={false} />
       <html
         lang="en"
         className={`${dmSans.variable} ${spaceGrotesk.variable} scrollbar-thin antialiased`}
       >
-        <body>{children}</body>
+        <ThemeProvider>
+          <body>{children}</body>
+        </ThemeProvider>
       </html>
     </>
   );
