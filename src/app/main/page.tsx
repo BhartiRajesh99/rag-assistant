@@ -290,6 +290,18 @@ export default function RAGAssistant() {
     }
   };
 
+  const handleDataSourcesDelete = async () => {
+    try {
+      const response = await axios.delete("/api/delete");
+      setDataSources([]);
+      console.log(response);
+      toast.success(response.data?.message || "Deletion Successful");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Deletion UnSuccessful");
+    }
+  };
+
   // Auto-scroll to bottom whenever messages change
   useEffect(() => {
     if (bottomRef.current) {
@@ -630,17 +642,19 @@ export default function RAGAssistant() {
                     </div>
                     <div className="flex justify-between w-full items-center">
                       <p>Data Sources ({dataSources.length})</p>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setDataSources([])}
-                        className="px-2 py-1 border-1 border-red-500/30 cursor-pointer hover:bg-red-500/20 text-red-500/90 hover:text-red-400 rounded-lg opacity-100 transition-all duration-200"
-                      >
-                        <div className="flex itmes-center gap-1">
-                          <Trash2 className="h-4 w-4 flex mt-[1px]" />
-                          <p className="">Clear</p>
-                        </div>
-                      </Button>
+                      {!!dataSources.length && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleDataSourcesDelete}
+                          className={`px-2 py-1 border-1 border-red-500/30 cursor-pointer hover:bg-red-500/20 text-red-500/90 hover:text-red-400 rounded-lg opacity-100 transition-all duration-200`}
+                        >
+                          <div className="flex itmes-center gap-1">
+                            <Trash2 className="h-4 w-4 flex mt-[1px]" />
+                            <p className="">Clear</p>
+                          </div>
+                        </Button>
+                      )}
                     </div>
                   </CardTitle>
                 </CardHeader>
@@ -725,6 +739,7 @@ export default function RAGAssistant() {
                                 </p>
                               </div>
                             </div>
+
                             <Button
                               variant="ghost"
                               size="sm"
@@ -808,27 +823,29 @@ export default function RAGAssistant() {
                         </div>
                       </div>
                       <div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            setMessages([
-                              {
-                                id: "1",
-                                content:
-                                  "Hello! I'm your RAGify Assistant. Upload some data sources and I'll help you find information from them.",
-                                sender: "bot",
-                                timestamp: date,
-                              },
-                            ])
-                          }
-                          className="px-2 py-3 cursor-pointer border-1 border-red-500/30 hover:bg-red-500/20 text-red-500/90 hover:text-red-400 rounded-lg opacity-100 transition-all duration-200"
-                        >
-                          <div className="flex itmes-center gap-1">
-                            <Trash2 className="h-4 w-4 flex mt-[1px]" />
-                            <p className="">Clear</p>
-                          </div>
-                        </Button>
+                        {messages.length > 2 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setMessages([
+                                {
+                                  id: "1",
+                                  content:
+                                    "Hello! I'm your RAGify Assistant. Upload some data sources and I'll help you find information from them.",
+                                  sender: "bot",
+                                  timestamp: date,
+                                },
+                              ])
+                            }
+                            className="px-2 py-3 cursor-pointer border-1 border-red-500/30 hover:bg-red-500/20 text-red-500/90 hover:text-red-400 rounded-lg opacity-100 transition-all duration-200"
+                          >
+                            <div className="flex itmes-center gap-1">
+                              <Trash2 className="h-4 w-4 flex mt-[1px]" />
+                              <p className="">Clear</p>
+                            </div>
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardTitle>
