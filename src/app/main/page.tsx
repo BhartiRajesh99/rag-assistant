@@ -252,6 +252,10 @@ export default function RAGAssistant() {
         body: JSON.stringify({ query: chatInput }),
       });
 
+      if(!response?.ok){
+        throw new Error(response.statusText)
+      }
+
       const reader: any = response.body?.getReader();
       const decoder = new TextDecoder();
 
@@ -282,9 +286,9 @@ export default function RAGAssistant() {
           }
         }
       }
-    } catch (error) {
-      toast.error("Failed to load message");
-      console.log("Error sendMessage");
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log("Error sendMessage", error);
     } finally {
       setIsloading(false);
     }
@@ -294,7 +298,6 @@ export default function RAGAssistant() {
     try {
       const response = await axios.delete("/api/delete");
       setDataSources([]);
-      console.log(response);
       toast.success(response.data?.message || "Deletion Successful");
     } catch (error: any) {
       console.log(error);

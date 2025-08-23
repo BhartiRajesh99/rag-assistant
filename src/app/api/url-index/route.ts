@@ -1,22 +1,16 @@
 import { NextResponse, NextRequest } from "next/server";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
-import { RecursiveUrlLoader } from "@langchain/community/document_loaders/web/recursive_url";
-import { compile, htmlToText } from "html-to-text";
+import { CheerioWebBaseLoader } from "@langchain/community/document_loaders/web/cheerio";
 
 export async function POST(request: NextRequest) {
   try {
     const response = await request.json();
 
-    const compiledConvert = compile({ wordwrap: 130 });
-    const loader = new RecursiveUrlLoader(response.content, {
-      extractor: compiledConvert,
-      maxDepth: 0,
-      timeout: 3000
-    });
+    const loader = new CheerioWebBaseLoader(response.content);
 
     const docs = await loader.load();
-
+    console.log("Docs Length: ", docs.length)
     const embeddings = new GoogleGenerativeAIEmbeddings({
       model: "text-embedding-004",
       apiKey: process.env.GOOGLE_API_KEY,

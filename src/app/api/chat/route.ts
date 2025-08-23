@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { QdrantVectorStore } from "@langchain/qdrant";
 import OpenAI from "openai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 
 const client = new OpenAI({
   apiKey: process.env.GOOGLE_API_KEY,
@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       model: "text-embedding-004",
       apiKey: process.env.GOOGLE_API_KEY,
     });
-
+   
     const vectorStore = await QdrantVectorStore.fromExistingCollection(
       embeddings,
       {
@@ -25,25 +25,24 @@ export async function POST(request: NextRequest) {
         collectionName: "rag-collection",
       }
     );
-
+    
     const vectorRetriever = vectorStore.asRetriever({
       k: 5,
     });
-
+    
     const relevantChunks = await vectorRetriever.invoke(query);
 
     const SYSTEM_PROMPT = `
-        You are an AI assistant who helps resolving user query based on the
-        context available to you from a PDF, docx, text, csv  file or website with the content and page number.
-    
-        Only ans based on the available context from file or website only.
+        You are an AI assistant who helps resolving user query based on the context available to you from a PDF, docx, text, csv  file or website with the content and page number.
+
+        Only ans based on the available context from file or website only. Also Provide Key Points from available context.
     
         Context:
         ${JSON.stringify(relevantChunks)}
       `;
 
     const stream = await client.chat.completions.create({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-flash-lite",
       messages: [
         {
           role: "system",
@@ -65,7 +64,7 @@ export async function POST(request: NextRequest) {
             );
           }
         }
-          
+
         controller.close();
       },
     });
@@ -76,20 +75,20 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
-    return new Response(
-      readable,
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-          "Connection": "keep-alive",
-        },
-      }
-    );
+
+    return new Response(readable, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
   } catch (error: any) {
     console.log("Error: ", error);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
